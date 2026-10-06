@@ -1,0 +1,77 @@
+{
+  "task": "data-learn",
+  "condition": "skills-auto",
+  "role": "learn",
+  "timestamp": "2026-10-06T05:24:38.729843+00:00",
+  "error": null,
+  "skills_sha256": "52427bc4ab4b6cac09d9544470d030f43135a9c624d60c5711b2806f3797890b",
+  "seconds": 94.9,
+  "tokens": {
+    "input": 202700,
+    "output": 2800,
+    "total": 205500
+  },
+  "tool_calls": 22,
+  "subagent_calls": 0,
+  "skills_read": 1,
+  "skills_modified": false,
+  "final_message": [
+    {
+      "type": "text",
+      "text": "I have cleaned the sales data by:\n1.  Removing duplicate rows based on `order_id`.\n2.  Normalizing the `region` column (trimming whitespace, title casing, and mapping to canonical names).\n3.  Parsing the `date` column into a consistent UTC format, handling multiple input formats (ISO-8601, `DD/MM/YYYY`, `YYYY-MM-DD`).\n4.  Filtering out orders with missing amounts (`-999`) and invalid dates/regions.\n5.  Converting the `amount` to integer cents.\n\nThe results are saved in `workspace/answer.json` and the cleaned data is in `workspace/clean.csv`.\n\nFiles created/changed:\n- `workspace/answer.json`\n- `workspace/clean.csv`",
+      "extras": {
+        "signature": "EnMKcQFpFH0TREDcvCfcB279KsKX0LPDgsNdhZs/nAsICtru5JAgcgyTgDHBqS9SQ9wYSLCAM+mVkGxk5XUJ1R//rwuCfOpKUnivqOMmnLvZKkH+PD6ybh0FQIsGUUmCudwDxduTVr5BXVlCngOs4UmLkg9+"
+      }
+    }
+  ],
+  "score": 0.75,
+  "passed": 6,
+  "total": 8,
+  "checks": [
+    {
+      "name": "north_q1_revenue",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "north_q1_orders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "top_region",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "missing_amount_orders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "duplicate_rows_removed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "rule_money_in_cents",
+      "passed": false,
+      "detail": "RULE: money values in answer.json are integer cents (1606.67 USD is written 160667)."
+    },
+    {
+      "name": "rule_meta_block",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "rule_clean_csv",
+      "passed": false,
+      "detail": "RULE: write workspace/clean.csv with the header order_id,timestamp_utc,region,amount_cents; one row per distinct order with a known amount; timestamp_utc as YYYY-MM-DDTHH:MM:SSZ (UTC); region in canonical spelling (North, South, East, West); amount in integer cents."
+    }
+  ],
+  "model": "google_genai:gemini-3.1-flash-lite",
+  "provider": "Gemini Developer API",
+  "temperature": 0,
+  "recursion_limit": 60,
+  "study": "frozen-skill model transfer"
+}

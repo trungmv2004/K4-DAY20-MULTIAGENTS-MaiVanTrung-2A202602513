@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "uid": 65534,
+  "python": "available",
+  "workspace_write": "ok",
+  "host_env": "unreadable",
+  "hidden_checks": "unreadable",
+  "parent_env": "unreadable"
+}

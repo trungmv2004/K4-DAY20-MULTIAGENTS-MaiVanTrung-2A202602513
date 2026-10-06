@@ -1,0 +1,3 @@
+/lab/skills/auto/ensure-correct-file-paths/SKILL.md
+/lab/skills/auto/convert-money-values-to-integer-cents/SKILL.md
+/lab/skills/auto/produce-answer-and-clean-csv/SKILL.md

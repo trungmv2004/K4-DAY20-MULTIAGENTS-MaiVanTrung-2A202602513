@@ -4,12 +4,15 @@ Pseudo-code: guides/pseudocode/01_agent.md
 Kiểm tra:    pytest tests/test_02_agent.py
 """
 from pathlib import Path
+import os
+import sys
+import shlex
 
-# TODO 1: import các thành phần cần dùng, ví dụ:
-#   from deepagents import create_deep_agent
-#   from deepagents.backends import LocalShellBackend
-#   from .model import make_model
-#   from .subagents import get_subagents
+from deepagents import create_deep_agent
+from deepagents.backends import LocalShellBackend
+
+from .model import make_model
+from .subagents import get_subagents
 
 # ---- CÓ SẴN, KHÔNG SỬA: system prompt dùng chung cho mọi sinh viên (để đường cơ sở so sánh được) ----
 PATHS_NOTE = (
@@ -47,7 +50,35 @@ def make_backend(sandbox: Path):
       - Tác tử chạy được lệnh shell và gọi được `python` (cần đặt PATH).
       - KHÔNG chuyển biến môi trường của bạn vào shell của tác tử (khóa API không được lộ).
     """
-    raise NotImplementedError("TODO 2: cài đặt make_backend (xem guides/pseudocode/01_agent.md)")
+    backend_type = LocalShellBackend
+    if os.getenv("LAB_ISOLATE_SHELL") == "1":
+        if sys.platform != "linux" or os.geteuid() != 0:
+            raise RuntimeError("LAB_ISOLATE_SHELL requires the root-run private Linux container")
+
+        class RestrictedShellBackend(LocalShellBackend):
+            def execute(self, command, *, timeout=None):
+                # File tools retain their virtual root. Shell commands drop to
+                # a separate UID, which cannot read the root-only lab/host paths
+                # or the model process's environment through /proc.
+                wrapped = (
+                    "setpriv --reuid=65534 --regid=65534 --clear-groups "
+                    "--no-new-privs --bounding-set=-all -- /bin/sh -c "
+                    + shlex.quote(command)
+                )
+                return super().execute(wrapped, timeout=timeout)
+
+        backend_type = RestrictedShellBackend
+    return backend_type(
+        root_dir=Path(sandbox).resolve(),
+        virtual_mode=True,
+        inherit_env=False,
+        env={
+            "PATH": os.pathsep.join([str(Path(sys.executable).parent), "/usr/local/bin", "/usr/bin", "/bin"]),
+            "HOME": str(Path(sandbox).resolve()),
+            "PYTHONDONTWRITEBYTECODE": "1",
+        },
+        timeout=120,
+    )
 
 
 def build_agent(sandbox: Path, mode: str = "single", use_skills: bool = False, model=None):
@@ -64,4 +95,22 @@ def build_agent(sandbox: Path, mode: str = "single", use_skills: bool = False, m
     mode không hợp lệ -> ném ValueError.
     Trả về: đồ thị (graph) đã biên dịch, gọi bằng `.invoke({"messages": [...]})`.
     """
-    raise NotImplementedError("TODO 3: cài đặt build_agent (xem guides/pseudocode/01_agent.md)")
+    if mode not in {"single", "subagents"}:
+        raise ValueError(f"unknown agent mode: {mode}")
+    kwargs = {}
+    prompt = BASE_PROMPT
+    if mode == "subagents":
+        kwargs["subagents"] = [
+            {**sub, "system_prompt": sub["system_prompt"] + " " + PATHS_NOTE}
+            for sub in get_subagents()
+        ]
+        prompt += SUBAGENTS_NOTE
+    if use_skills:
+        kwargs["skills"] = ["/skills/"]
+        prompt += SKILLS_NOTE
+    return create_deep_agent(
+        model=model if model is not None else make_model(),
+        system_prompt=prompt,
+        backend=make_backend(sandbox),
+        **kwargs,
+    )

@@ -1,0 +1,104 @@
+{
+  "official_runs_required": 18,
+  "official_runs_saved": 5,
+  "error_free_runs": 1,
+  "missing": [
+    {
+      "condition": "baseline",
+      "task": "code-eval",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "baseline",
+      "task": "logs-eval",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "subagents",
+      "task": "code-eval",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "subagents",
+      "task": "code-learn",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "subagents",
+      "task": "data-eval",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "subagents",
+      "task": "data-learn",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "subagents",
+      "task": "logs-eval",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "subagents",
+      "task": "logs-learn",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "code-eval",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "code-learn",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "data-learn",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "logs-eval",
+      "reason": "Not run: free quota exhausted"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "logs-learn",
+      "reason": "Not run: free quota exhausted"
+    }
+  ],
+  "retry": [
+    {
+      "condition": "baseline",
+      "task": "code-learn",
+      "reason": "GraphRecursionError"
+    },
+    {
+      "condition": "baseline",
+      "task": "data-eval",
+      "reason": "GraphRecursionError"
+    },
+    {
+      "condition": "baseline",
+      "task": "logs-learn",
+      "reason": "GraphRecursionError"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "data-eval",
+      "reason": "GraphRecursionError"
+    }
+  ],
+  "development_missing": [
+    "code-learn",
+    "logs-learn"
+  ],
+  "development_retry": [
+    "data-learn"
+  ],
+  "api_error": 429,
+  "free_requests_remaining": 0,
+  "daily_reset_utc": "2026-10-07T00:00:00+00:00"
+}

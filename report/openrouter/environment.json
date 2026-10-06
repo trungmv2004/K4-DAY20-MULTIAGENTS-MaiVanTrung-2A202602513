@@ -1,0 +1,16 @@
+{
+  "python": "3.12.15 (main, Oct  1 2026, 21:47:32) [GCC 14.2.0]",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+  "deepagents": "0.7.21",
+  "model": "nvidia/nemotron-3-super-120b-a12b:free",
+  "temperature": 0.0,
+  "recursion_limit": 60,
+  "provider": "OpenRouter",
+  "execution": "Docker Linux",
+  "recursion_limits_observed": [
+    16,
+    40,
+    60
+  ],
+  "study_status": "partial; generated skill frozen; evaluations interrupted; free API quota exhausted"
+}

@@ -1,0 +1,23 @@
+---
+name: produce-answer-and-clean-csv
+description: Use when you must generate answer.json with a meta block and clean.csv according to the specification.
+---
+- Determine the input file name (source) from the provided path or arguments.
+- Read all rows, counting total rows (`rows_in`).
+- Track distinct order IDs and whether each has a known amount (not missing/sentinel).
+- Compute `rows_used` as the count of distinct order IDs with a known amount.
+- Build the meta object: `{ "source": <input file name>, "rows_in": <rows_in>, "rows_used": <rows_used> }`.
+- Compute any required result fields (e.g., region totals, Q1 revenue, etc.) per the task logic.
+- Assemble the final JSON dictionary containing the result fields plus the `meta` object.
+- Write the dictionary to `workspace/answer.json` with proper JSON formatting (indent optional but valid).
+- For clean.csv:
+  - Define header: `order_id,timestamp_utc,region,amount_cents`.
+  - For each distinct order with a known amount:
+    - Use the first encountered row for that order_id.
+    - Convert the timestamp to UTC and format as `YYYY-MM-DDTHH:MM:SSZ`.
+    - Normalize region: trim whitespace, convert to title case, and map to canonical spelling (North, South, East, West).
+    - Convert amount to integer cents using the money‑conversion rule.
+    - Write one row with the fields in header order.
+- Ensure each order_id appears exactly once in clean.csv.
+- After writing, optionally verify line count matches `rows_used` plus header.
+- Confirm both files exist in the workspace before considering the task complete.

@@ -1,0 +1,23 @@
+{
+  "check_breakdown": {
+    "command": [
+      "python",
+      "scripts/check_breakdown.py"
+    ],
+    "exit_code": 0
+  },
+  "git_freeze_check": {
+    "command": [
+      "python",
+      "scripts/verify_freeze.py"
+    ],
+    "exit_code": 1
+  },
+  "local_freeze_check": {
+    "command": [
+      "python",
+      "report/verify_local_freeze.py"
+    ],
+    "exit_code": 1
+  }
+}

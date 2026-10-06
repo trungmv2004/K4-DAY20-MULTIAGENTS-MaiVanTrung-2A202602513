@@ -6,10 +6,17 @@ Chạy thật:   python -m lab.runner --condition baseline --tasks learn
 """
 import argparse
 import json
+import os
+import re
+import tempfile
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
+from langchain_core.callbacks import UsageMetadataCallbackHandler
 from langchain_core.messages import AIMessage, ToolMessage
 
+from .agent import build_agent
 from .grading import grade                                                      # có sẵn
 from .tasks import ROOT, get_task, hash_dir, list_tasks, prepare_sandbox         # có sẵn
 
@@ -65,7 +72,81 @@ def run_task(task_id: str, condition: str, results_dir="results", model=None, re
     Lỗi khi chạy tác tử KHÔNG được làm chương trình dừng: ghi vào `error` và vẫn chấm điểm.
     Sandbox là thư mục tạm NGOÀI kho mã nguồn và phải được xóa sau khi chạy.
     """
-    raise NotImplementedError("TODO 1: cài đặt run_task (xem guides/pseudocode/03_runner.md)")
+    cfg = CONDITIONS[condition]
+    task = get_task(task_id)
+    skills_dir = ROOT / cfg["skills_dir"] if cfg["skills_dir"] else None
+    out = Path(results_dir) / condition / task_id
+    out.mkdir(parents=True, exist_ok=True)
+    record = {
+        "task": task_id,
+        "condition": condition,
+        "role": task.role,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "error": None,
+    }
+    usage = UsageMetadataCallbackHandler()
+    messages = []
+    # TemporaryDirectory removes the copied workspace even when execution fails.
+    with tempfile.TemporaryDirectory(prefix="lab-agent-") as tmp:
+        sandbox = Path(tmp)
+        prepare_sandbox(task, sandbox, skills_dir)
+        # Windows Git checkouts use CRLF; the provided integrity checks expect
+        # the original LF bytes. Normalize only copied Python files, never tasks/.
+        if task.family == "code":
+            for source in (sandbox / "workspace").rglob("*.py"):
+                original = source.read_bytes()
+                normalized = original.replace(b"\r\n", b"\n")
+                if normalized != original:
+                    source.write_bytes(normalized)
+        if os.getenv("LAB_ISOLATE_SHELL") == "1":
+            # Only the copied task sandbox belongs to the unprivileged shell.
+            # The runner, credentials and hidden checks stay root-only.
+            for path in [sandbox, *sandbox.rglob("*")]:
+                if not path.is_symlink():
+                    os.chown(path, 65534, 65534)
+        before = hash_dir(sandbox / "skills")
+        record["skills_sha256"] = before
+        started = time.perf_counter()
+        try:
+            agent = build_agent(sandbox, mode=cfg["mode"], use_skills=skills_dir is not None, model=model)
+            # Keep the last state so an API/recursion error still leaves a useful trace.
+            for state in agent.stream(
+                {"messages": [{"role": "user", "content": task.instruction}]},
+                config={"callbacks": [usage], "recursion_limit": recursion_limit},
+                stream_mode="values",
+            ):
+                messages = state.get("messages", messages)
+                # Persist progress as it arrives, including during long delegations.
+                (out / "trace.md").write_text(render_trace(messages), encoding="utf-8")
+        except Exception as exc:  # noqa: BLE001
+            record["error"] = f"{type(exc).__name__}: {exc}"
+        record["seconds"] = round(time.perf_counter() - started, 1)
+        record["tokens"] = {
+            key: sum(item.get(usage_key, 0) for item in usage.usage_metadata.values())
+            for key, usage_key in (("input", "input_tokens"), ("output", "output_tokens"), ("total", "total_tokens"))
+        }
+        calls = [tc for m in messages if isinstance(m, AIMessage) for tc in m.tool_calls]
+        read_skills = set()
+        for call in calls:
+            if call["name"] == "read_file":
+                path = str(call.get("args", {}).get("file_path", "")).replace("\\", "/")
+                match = re.search(r"(?:^|/)skills/([^/]+)(?:/|$)", path)
+                if match:
+                    read_skills.add(match.group(1))
+        record.update(
+            tool_calls=len(calls),
+            subagent_calls=sum(tc["name"] == "task" for tc in calls),
+            skills_read=len(read_skills),
+            skills_modified=hash_dir(sandbox / "skills") != before,
+            final_message=messages[-1].content if messages and isinstance(messages[-1], AIMessage) else "",
+        )
+        graded = grade(task, sandbox / "workspace")
+        if graded.get("error"):
+            record["error"] = "; ".join(filter(None, [record["error"], "grading: " + graded["error"]]))
+        record.update({key: graded[key] for key in ("score", "passed", "total", "checks")})
+        (out / "trace.md").write_text(render_trace(messages), encoding="utf-8")
+    (out / "run.json").write_text(json.dumps(record, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return record
 
 
 def main(argv=None):

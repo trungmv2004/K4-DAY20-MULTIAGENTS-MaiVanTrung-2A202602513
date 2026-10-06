@@ -1,0 +1,13 @@
+usage: continue_lab.py [-h] [--recursion-limit RECURSION_LIMIT]
+                       {learn,development,freeze,frozen-learning,evaluation}
+
+Resume the GUIDE stages after OpenRouter quota/credits become available. Run
+through report/run.ps1. Review generated skills before the freeze stage.
+Existing attempts are archived; this script never creates Git commits or tags.
+
+positional arguments:
+  {learn,development,freeze,frozen-learning,evaluation}
+
+options:
+  -h, --help            show this help message and exit
+  --recursion-limit RECURSION_LIMIT

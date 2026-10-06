@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-06T05:01:53.466650+00:00",
+  "provider": "Gemini Developer API",
+  "model": "google_genai:gemini-3.1-flash-lite",
+  "temperature": 0,
+  "recursion_limit": 60,
+  "results": "results/{baseline,subagents,skills-auto}",
+  "previous_results": "results/openrouter",
+  "repeats": "results/gemini-repeat/skills-auto",
+  "skills": "skills/auto",
+  "freeze_evidence": "report/freeze.json",
+  "curator": "not rerun: three calls already used; original skill remains frozen",
+  "interpretation": "Transfer of an OpenRouter-generated skill to Gemini; original protocol deviations remain. All 18 primary Gemini runs use the same model and recursion cap. Repeated learning runs also occur after the original freeze, and are not pre-freeze development. Do not compare provider token means as treatment effects.",
+  "reason": "Gemini 3.8 Flash returned a daily free quota of 20 with no remaining calls. Try the listed stable Flash-Lite model for the uniform continuation; preserve 3.8 attempts separately.",
+  "shell_isolation": "Private Docker repository, shell UID 65534, /lab and /host mode 0700"
+}

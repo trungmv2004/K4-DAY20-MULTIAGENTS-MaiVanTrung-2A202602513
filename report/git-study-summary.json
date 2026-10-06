@@ -1,0 +1,84 @@
+{
+  "timestamp": "2026-10-06T05:50:37.686917+00:00",
+  "study": "git-freeze-continuation-20261006",
+  "primary_runs": 6,
+  "development_runs": 3,
+  "pairs": [],
+  "breakdown": [
+    {
+      "condition": "baseline",
+      "role": "learn",
+      "runs": 3,
+      "errors": 0,
+      "technical_passed": 18,
+      "technical_total": 18,
+      "rules_passed": 0,
+      "rules_total": 9,
+      "mean_score": 0.6638888888888889,
+      "mean_tokens": 84529.0
+    },
+    {
+      "condition": "subagents",
+      "role": "learn",
+      "runs": 3,
+      "errors": 0,
+      "technical_passed": 17,
+      "technical_total": 18,
+      "rules_passed": 0,
+      "rules_total": 9,
+      "mean_score": 0.6222222222222222,
+      "mean_tokens": 140000.33333333334
+    }
+  ],
+  "missing": [
+    {
+      "condition": "baseline",
+      "task": "code-eval"
+    },
+    {
+      "condition": "baseline",
+      "task": "data-eval"
+    },
+    {
+      "condition": "baseline",
+      "task": "logs-eval"
+    },
+    {
+      "condition": "subagents",
+      "task": "code-eval"
+    },
+    {
+      "condition": "subagents",
+      "task": "data-eval"
+    },
+    {
+      "condition": "subagents",
+      "task": "logs-eval"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "code-eval"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "code-learn"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "data-eval"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "data-learn"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "logs-eval"
+    },
+    {
+      "condition": "skills-auto",
+      "task": "logs-learn"
+    }
+  ],
+  "errors": []
+}

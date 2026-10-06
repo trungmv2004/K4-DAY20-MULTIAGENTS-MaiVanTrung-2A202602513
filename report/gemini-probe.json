@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-10-06T04:53:35.865504+00:00",
+  "model": "google_genai:gemini-3.8-flash",
+  "ok": true,
+  "reply": [
+    {
+      "type": "text",
+      "text": "OK",
+      "extras": {
+        "signature": "EqkCCqYCAWkUfRP/6KcOIjLl6tEScXNF9zGDHTfnmnmGcfEqPg4flNcXNlpACINXYg46UtASCHKt+q0SYVcoArfGplVp5Ho/8KLw4AHyH+G9MmqaGdbyDY7aOwAX0WoMveQMk2j5L2Mp2OKnb2Jt9MdB34RlymP5JQEHmfkc1xIcxiipVWPsgdLsk0OkZsQkTEAk/6hTDdQekfrCC8Tm6dd46hABPEDGYH2UYgEYIIN2mGY48DF4AKH2xFLUJS2fcqh6io37hrFC2HYZMk08face2+9XukzxjgJX1PR4rPXzzDd0OfheBac29ZDHEu8QRRS95yBzX24CcUBx6had+I+CT3uf8P5j3NerlanrLb+w2kM3kfKBCVbvEY3t9ay0qvxeqGOeiTmK1INl"
+      }
+    }
+  ],
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 52,
+    "total_tokens": 56,
+    "input_token_details": {
+      "cache_read": 0
+    },
+    "output_token_details": {
+      "reasoning": 51
+    }
+  }
+}

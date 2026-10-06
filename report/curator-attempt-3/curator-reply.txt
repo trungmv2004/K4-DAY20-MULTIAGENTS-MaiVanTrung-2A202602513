@@ -1,0 +1,25 @@
+=== SKILL: ensure-answer-and-clean-csv ===
+---
+name: ensure-answer-and-clean-csv
+description: Use when you need to produce answer.json and clean.csv that comply with monetary‑in‑cents, meta block, and cleaned CSV requirements for tabular data tasks.
+---
+- Check that every monetary value placed in answer.json is an integer representing cents (e.g., $16.07 → 1607).  
+- Verify that answer.json contains a top‑level object named `meta` with the fields:  
+  • `source` set to the name of the input data file,  
+  • `rows_in` set to the total number of rows read from the input (including duplicates),  
+  • `rows_used` set to the count of distinct orders that have a known (non‑missing) amount.  
+- Create (or overwrite) clean.csv in the workspace with the exact header: `order_id,timestamp_utc,region,amount_cents`.  
+- For each distinct order_id that has a known amount, write one row to clean.csv:  
+  • `order_id` as it appears in the data,  
+  • `timestamp_utc` formatted as `YYYY-MM-DDTHH:MM:SSZ` in UTC,  
+  • `region` converted to one of the canonical spellings (North, South, East, West),  
+  • `amount_cents` as an integer cents value.  
+- Remove duplicate rows based on `order_id`, keeping only the first occurrence encountered.  
+- Treat any sentinel value used to indicate a missing amount (e.g., -999) as missing and exclude those rows from clean.csv and from `rows_used`.  
+- Ensure region names are trimmed of whitespace and title‑cased before mapping to the canonical set.  
+- After writing answer.json and clean.csv, validate that:  
+  • All amount fields are integers,  
+  • The meta object is present and correctly populated,  
+  • clean.csv contains exactly the header and one row per distinct order with a known amount.  
+- If any check fails, correct the data and repeat validation until all conditions are satisfied.  
+=== END ===

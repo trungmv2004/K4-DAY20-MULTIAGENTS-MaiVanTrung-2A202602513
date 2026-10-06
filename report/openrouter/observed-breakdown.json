@@ -1,0 +1,32 @@
+[
+  {
+    "condition": "baseline",
+    "role": "learn",
+    "runs": 3,
+    "errors": 2,
+    "technical": "12/18",
+    "rules": "0/9",
+    "mean_tokens": 209037,
+    "read_skill": 0
+  },
+  {
+    "condition": "baseline",
+    "role": "eval",
+    "runs": 1,
+    "errors": 1,
+    "technical": "0/5",
+    "rules": "0/4",
+    "mean_tokens": 63733,
+    "read_skill": 0
+  },
+  {
+    "condition": "skills-auto",
+    "role": "eval",
+    "runs": 1,
+    "errors": 1,
+    "technical": "0/5",
+    "rules": "0/4",
+    "mean_tokens": 56843,
+    "read_skill": 1
+  }
+]

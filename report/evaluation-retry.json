@@ -1,0 +1,6 @@
+{
+  "reason": "Both evaluation attempts at 16 steps stopped before outputs; API remains available, so retry with 40 steps without changing skills or hypotheses.",
+  "old_recursion_limit": 16,
+  "new_recursion_limit": 40,
+  "post_hoc_limit_change": true
+}

@@ -1,0 +1,5 @@
+﻿Docker image rebuilt successfully with explicit Gemini and util-linux dependencies.
+New image: 29 passed in 7.70s (all offline tests).
+Earlier isolation change: 29 passed in 8.90s.
+Python 3.12.15, deepagents 0.7.21, langchain-google-genai 4.4.0, google-genai 2.28.0.
+Shell isolation check: PASS; UID 65534, Python/workspace writes work; credentials/checks/parent environment unreadable.

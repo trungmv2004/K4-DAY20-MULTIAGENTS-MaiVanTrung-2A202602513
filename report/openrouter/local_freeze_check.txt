@@ -1,0 +1,8 @@
+FAIL: missing official skills-auto run: code-eval
+FAIL: missing official skills-auto run: code-learn
+FAIL: data-eval: execution error
+FAIL: missing official skills-auto run: data-learn
+FAIL: missing official skills-auto run: logs-eval
+FAIL: missing official skills-auto run: logs-learn
+Local freeze: 1 official runs checked; FAIL
+Git freeze requirement remains unmet by the explicit no-commit instruction.

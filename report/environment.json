@@ -1,0 +1,16 @@
+{
+  "python": "3.12.15 (main, Oct  1 2026, 21:47:32) [GCC 14.2.0]",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+  "deepagents": "0.7.21",
+  "langchain_google_genai": "4.4.0",
+  "google_genai": "2.28.0",
+  "model": "google_genai:gemini-3.1-flash-lite",
+  "provider": "Gemini Developer API",
+  "curator_model": "nvidia/nemotron-3-super-120b-a12b:free (OpenRouter, already frozen)",
+  "temperature": 0,
+  "recursion_limit": 60,
+  "execution": "Docker Linux: private repository; shell UID 65534",
+  "study_status": "18/18 primary runs complete; 3 learning repeats; frozen-skill model transfer; original protocol deviations preserved",
+  "study_image": "sha256:ed9a91db2658b8f05840d3c136ebc24b3266720b8c547adc21cff6babca0dec5",
+  "rebuilt_image_sdk_verified": true
+}

@@ -1,0 +1,14 @@
+{
+  "input_tokens": 2288,
+  "output_tokens": 1986,
+  "total_tokens": 4274,
+  "input_token_details": {
+    "audio": 0,
+    "cache_read": 0,
+    "cache_creation": 0
+  },
+  "output_token_details": {
+    "audio": 0,
+    "reasoning": 1195
+  }
+}

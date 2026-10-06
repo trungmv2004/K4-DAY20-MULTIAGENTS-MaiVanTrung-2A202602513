@@ -1,0 +1,20 @@
+{
+    "study":  "git-freeze-continuation-20261006",
+    "timestamp":  "2026-10-06T05:45:32.5574017Z",
+    "model":  "google_genai:gemini-3.1-flash-lite",
+    "temperature":  0,
+    "recursion_limit":  60,
+    "skills_sha256":  "52427bc4ab4b6cac09d9544470d030f43135a9c624d60c5711b2806f3797890b",
+    "development_tasks":  [
+                              "code-learn",
+                              "data-learn",
+                              "logs-learn"
+                          ],
+    "official_runs":  12,
+    "retained_baseline_subagents_learning_runs":  6,
+    "curator_reruns":  0,
+    "historical_evaluation_already_seen":  true,
+    "hypotheses_policy":  "Reuse original hypotheses unchanged; no claim of fresh blind preregistration",
+    "push":  false,
+    "protected_reference_commit":  "d982034811dae6e0e42d0698131a9f33972a0bed"
+}

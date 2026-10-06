@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "protected_files_diff": [],
+  "protected_ast_verified": [
+    "src/lab/agent.py:PATHS_NOTE",
+    "src/lab/agent.py:BASE_PROMPT",
+    "src/lab/agent.py:SKILLS_NOTE",
+    "src/lab/agent.py:SUBAGENTS_NOTE",
+    "src/lab/runner.py:CONDITIONS",
+    "src/lab/runner.py:render_trace",
+    "src/lab/runner.py:main",
+    "src/lab/curator.py:SAFE_NAME",
+    "src/lab/curator.py:validate_skill",
+    "src/lab/curator.py:parse_skill_blocks"
+  ],
+  "staged_files": [],
+  "env_ignored": true
+}

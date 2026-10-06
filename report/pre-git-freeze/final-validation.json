@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-10-06T05:34:34.023566+00:00",
+  "ok": true,
+  "primary_runs": 18,
+  "repeat_runs": 3,
+  "all_primary_runs_same_model_and_cap": true,
+  "all_primary_runs_error_free": true,
+  "checks_and_tokens_consistent": true,
+  "official_skills_runs_checked": 6,
+  "skills_hash_unchanged": true,
+  "hypotheses_hash_unchanged": true,
+  "all_skill_runs_after_freeze": true,
+  "sandbox_skills_modified": false,
+  "credentials_found_in_artifacts": false,
+  "files_scanned_for_credentials": 149,
+  "git_freeze": false,
+  "original_protocol_complete": false,
+  "local_freeze": "OK",
+  "execution_matrix": "complete"
+}

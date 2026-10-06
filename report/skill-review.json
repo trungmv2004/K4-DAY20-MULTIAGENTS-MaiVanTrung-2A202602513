@@ -1,0 +1,23 @@
+{
+  "curator_calls": 3,
+  "reruns": 2,
+  "retained": "produce-answer-and-clean-csv",
+  "source": "report/curator-attempt-2/skills/produce-answer-and-clean-csv/SKILL.md",
+  "content_edited": false,
+  "discarded_final": [
+    "ensure-correct-file-paths",
+    "convert-money-values-to-integer-cents"
+  ],
+  "attempt_1": "All 3 blocks rejected because names used underscores.",
+  "attempt_2": "Three valid blocks; path and money advice discarded, output conventions block retained verbatim after final retry failed.",
+  "attempt_3": "One block rejected by unchanged validator because it contains generic word orders, which is also an evaluation marker.",
+  "retained_limitations": [
+    "Money conversion rule is referenced without defining rounding precisely.",
+    "JSON monetary values are not explicitly required to be cents in the retained body.",
+    "Description assumes answer.json/meta/clean.csv; transfer to other output formats is uncertain.",
+    "Exact Acme output header and region spellings were learned from failed-check feedback, not evaluation data."
+  ],
+  "development_recursion_limit": 16,
+  "evaluation_recursion_limit": 16,
+  "complete_study": false
+}

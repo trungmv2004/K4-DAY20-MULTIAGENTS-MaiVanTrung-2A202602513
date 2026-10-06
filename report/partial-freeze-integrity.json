@@ -1,0 +1,8 @@
+{
+  "local_integrity_ok": true,
+  "problems": [],
+  "scope": "Only completed attempt coverage; not full-study validity or execution success",
+  "covered_evaluation_attempts": 1,
+  "required_skill_runs": 6,
+  "git_freeze_satisfied": false
+}

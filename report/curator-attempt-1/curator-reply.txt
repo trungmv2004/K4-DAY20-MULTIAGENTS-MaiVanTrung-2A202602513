@@ -1,0 +1,43 @@
+=== SKILL: ensure_correct_workspace_and_file_access ===
+---
+name: ensure_correct_workspace_and_file_access
+description: Use when you need to read input files or write output files in a shared workspace.
+---
+- Confirm your current working directory is the project root or the workspace parent; if not, change to it (e.g., `cd /workspace` or `cd ./workspace`).
+- List the expected input file with `ls -l <path>` or `stat <path>`; if the file is missing, print a clear error and halt.
+- Prefer relative paths from the workspace root (e.g., `workspace/sales.csv`) unless an absolute path is mandated.
+- Before writing any output, ensure the target directory exists; create it with `mkdir -p <dir>` if needed.
+- After each file operation (open, read, write), check the exit status; on failure, log the error message and stop further processing.
+- Record the exact paths used in a note or log for reproducibility and debugging.
+=== END ===
+
+=== SKILL: validate_output_format_and_rules ===
+---
+name: validate_output_format_and_rules
+description: Use when you have generated result files and must confirm they comply with the task specification.
+---
+- Load `answer.json` and verify it is valid JSON (e.g., using `jq .` or a JSON parser).
+- Ensure every monetary field is an integer representing cents (no decimal point or fractional part).
+- Confirm the presence of a `meta` object containing `source` (string) and `rows_in`, `rows_used` (non‑negative integers).
+- Verify that `clean.csv` exists and its first line exactly matches the header: `order_id,timestamp_utc,region,amount_cents`.
+- For each subsequent row in `clean.csv`:
+  * Check `timestamp_utc` matches the pattern `YYYY-MM-DDTHH:MM:SSZ`.
+  * Ensure `region` is one of the canonical spellings (North, South, East, West) after trimming whitespace.
+  * Confirm `amount_cents` is an integer (positive, zero, or negative as allowed).
+- Cross‑check that `rows_in` equals the total line count of the original input file (including duplicates) and `rows_used` equals the count of distinct order IDs with a known (non‑missing) amount.
+- If any validation fails, output a descriptive error message and do not treat the task as complete.
+=== END ===
+
+=== SKILL: preprocess_raw_data_consistently ===
+---
+name: preprocess_raw_data_consistently
+description: Use when you receive a raw CSV or similar dataset that may contain duplicates, missing values, or inconsistent formatting.
+---
+- Read the entire file into a structure while preserving the original row count for later reporting.
+- Deduplicate records using the primary key (e.g., `order_id`), keeping the first occurrence and incrementing a duplicate counter.
+- Trim leading/trailing whitespace from all string fields; apply a canonical case (e.g., title case) to categorical values like `region`.
+- Parse date/time strings into UTC datetime objects: attempt ISO‑8601 with `T`, then `YYYY-MM-DD`, then `DD/MM/YYYY`; raise an error if none succeed.
+- Treat a designated sentinel value (e.g., `-999`) as a missing amount; exclude such rows from numeric sums but count them for missing‑amount metrics.
+- Write the cleaned, deduplicated rows to the required intermediate file (e.g., `clean.csv`) using the exact column order: `order_id,timestamp_utc,region,amount_cents`.
+- Log key statistics: total rows processed, duplicates removed, missing amounts encountered, and any other metrics needed for the final answer.
+=== END ===

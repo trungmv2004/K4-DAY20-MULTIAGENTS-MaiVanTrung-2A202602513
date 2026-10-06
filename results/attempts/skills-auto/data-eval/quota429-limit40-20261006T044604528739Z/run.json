@@ -1,0 +1,69 @@
+{
+  "task": "data-eval",
+  "condition": "skills-auto",
+  "role": "eval",
+  "timestamp": "2026-10-06T04:44:55.890206+00:00",
+  "error": "OpenAIRateLimitError: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1791331200000'}, 'limit_source': 'openrouter_free_tier_daily', 'remedy_hint': 'Wait for the daily reset (see X-RateLimit-Reset), or purchase credits to raise your free-model daily limit.', 'provider_name': None}}, 'user_id': 'user_3JNeofMupJXcC6XDwmachpuGUlm'}",
+  "skills_sha256": "52427bc4ab4b6cac09d9544470d030f43135a9c624d60c5711b2806f3797890b",
+  "seconds": 2.3,
+  "tokens": {
+    "input": 0,
+    "output": 0,
+    "total": 0
+  },
+  "tool_calls": 0,
+  "subagent_calls": 0,
+  "skills_read": 0,
+  "skills_modified": false,
+  "final_message": "",
+  "score": 0.0,
+  "passed": 0,
+  "total": 9,
+  "checks": [
+    {
+      "name": "march_revenue_utc",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "march_orders_utc",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "top_category",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "missing_total_orders",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "duplicate_events_removed",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "rule_money_in_cents",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "rule_meta_block",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "rule_clean_csv",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "rule_sorted_keys_format",
+      "passed": false,
+      "detail": ""
+    }
+  ]
+}

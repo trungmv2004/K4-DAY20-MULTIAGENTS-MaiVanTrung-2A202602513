@@ -2,6 +2,8 @@
 
 Ngày 06/10/2026. Bản tự chấm 91/100 trước khi được phép commit được giữ nguyên tại [pre-git-freeze/GRADING.md](pre-git-freeze/GRADING.md).
 
+Lần chấm này đối chiếu cả [báo cáo cá nhân đã điền](../REPORT_TEMPLATE.md), [báo cáo chi tiết](REPORT.md), mã nguồn và các bản ghi thực nghiệm. Làm cá nhân không bị trừ điểm: RUBRIC không quy định khoản trừ cho hình thức này. Đây là điểm tự chấm đề xuất, không thay thế quyết định của giảng viên.
+
 **Điểm tự chấm bảo thủ: 99/100.** Nếu chỉ xét điều kiện commit trước tag mới của mục 6.1, mục này đủ 4/4 và tổng là 100/100. Bản chấm bảo thủ giữ 3/4 vì GUIDE 4.0 yêu cầu commit trước khi thấy bất kỳ điểm đánh giá nào; commit mới không khôi phục lịch sử đã thấy đánh giá cũ. Giảng viên quyết định cách xử lý giới hạn này; không tự tuyên bố đây là một đăng ký mù mới.
 
 | Hạng mục | Điểm bảo thủ | Tối đa |
@@ -15,6 +17,42 @@ Ngày 06/10/2026. Bản tự chấm 91/100 trước khi được phép commit đ
 | **Tổng** | **99** | **100** |
 
 Thưởng 0; chưa có bằng chứng cần áp khoản phạt bổ sung. Điểm này đánh giá harness, hồ sơ và phân tích theo rubric, không phải tỷ lệ task đạt toàn bộ check.
+
+## Đối chiếu toàn bộ tiêu chí
+
+| Tiêu chí RUBRIC | Điểm đề xuất | Căn cứ |
+|---|---:|---|
+| 1. Agent | 10/10 | 9/9 test agent đạt. |
+| 1. Runner | 12/12 | 6/6 test runner đạt. |
+| 1. Curator | 8/8 | 2/2 test curator đạt; 12/12 test mã có sẵn cũng đạt. |
+| 2.1 Baseline | 4/4 | Đủ sáu cặp run.json/trace.md; một bản ghi lỗi thực thi được công khai, xem giới hạn bên dưới. |
+| 2.2 Phân loại lỗi | 10/10 | Chín check học thất bại có tên task/check và detail; tất cả nhóm E, kèm bằng chứng phủ định A–D bằng 18/18 check kỹ thuật. |
+| 3.1 Thiết kế subagent | 3/3 | Ba vai trò explorer/implementer/reviewer có description và phạm vi riêng. |
+| 3.2 Kết quả subagents | 3/3 | Sáu bản ghi và trace, không lỗi thực thi. |
+| 3.3 Phân tích subagents | 4/4 | Số lời gọi, hai lần general-purpose, quy tắc truyền đi, lỗi UTC và token được đối chiếu với trace. |
+| 4.1 Curator hoạt động | 5/5 | Skill hợp lệ khớp byte với đầu ra curator lần 2; có hồ sơ ba lần gọi thật. |
+| 4.2 Chất lượng skill | 5/5 | Nhận xét tổng quát hóa, đúng/sai, độ dài/description; giải thích các lần chạy lại và loại skill. |
+| 4.3 Kết quả skills-auto | 3/3 | Sáu lượt không lỗi thực thi; verifier gốc báo OK. |
+| 4.4 Dùng skill | 3/3 | Giải thích riêng bốn lượt không đọc; hai lượt đọc nhưng áp dụng một phần có ví dụ meta/UTC/CSV. |
+| 5.1 Bảng so sánh | 5/5 | Bảng sinh lại bằng lab.compare khớp report/table.md và bảng trong báo cáo cá nhân. |
+| 5.2 Đóng băng | 5/5 | Hypotheses trước tag; sáu lượt skills-auto sau tag, đúng hash, skill không đổi. |
+| 6.1 Giả thuyết | 3/4 bảo thủ | Có H1–H3, lý do và nguồn, commit trước tag mới; đã biết đánh giá cũ. Theo riêng điều kiện trước tag của RUBRIC: 4/4. |
+| 6.2 Phân tích kết quả | 8/8 | Học/đánh giá, kỹ thuật/quy ước, trace, token, quá khớp và ba cặp development/chính thức cùng cấu hình đều được phân tích. |
+| 6.3 Hạn chế | 4/4 | Bảy hạn chế có giải thích ảnh hưởng tới kết luận. |
+| 6.4 Trình bày/tái lập | 4/4 | Đủ mười mục, ba câu hỏi làm quen, model/tham số/lệnh/commit và tài liệu tái lập. |
+| Thưởng | 0/5 | Chưa hoàn thành một thí nghiệm mở rộng đầy đủ; không tính development bắt buộc thành bonus. |
+
+Khoản giảm bảo thủ ở 6.1 là đánh giá giới hạn theo GUIDE 4.0, không phải mức phạt cố định được RUBRIC quy định. Vì vậy tổng theo các điều kiện ghi trực tiếp trong RUBRIC là 100/100; tổng bảo thủ khi xét lịch sử đánh giá là 99/100.
+
+## Kiểm tra lại khi chấm báo cáo cá nhân
+
+- Chạy lại toàn bộ pytest ngoại tuyến trong Docker: 29/29 đạt, exit 0.
+- Chạy lại scripts/verify_freeze.py nguyên bản trong Docker Linux: `checked 6 runs of skill conditions: OK`, exit 0.
+- Đối chiếu trực tiếp 18 bản ghi: số check đạt/tổng và score nhất quán, đủ trace; chỉ baseline/data-eval có lỗi thực thi.
+- Bảng sinh lại khớp nguyên bảng trong báo cáo cá nhân; đủ mười mục và mọi liên kết tệp cục bộ đều tồn tại.
+- Skill vẫn khớp byte với đầu ra curator và hash đã đóng băng. Ba development nằm trước tag, ba lượt học chính thức sau tag, cùng hash/model/cap; chênh điểm đều 0.
+
+Verifier được chấm trong môi trường Linux đã dùng để chạy thí nghiệm. Hàm hash có sẵn dùng chuỗi đường dẫn tương đối: chạy trực tiếp trên Windows tạo dấu phân cách khác Linux và có thể báo lệch hash dù byte skill không đổi; Python Windows còn cần UTF-8 để đọc nội dung Git tiếng Việt. Không sửa hàm hash hoặc verifier để che khác biệt môi trường.
 
 ## Những tiêu chí đã bổ sung
 

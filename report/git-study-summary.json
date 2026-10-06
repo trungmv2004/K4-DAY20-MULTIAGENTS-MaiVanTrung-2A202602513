@@ -1,10 +1,62 @@
 {
-  "timestamp": "2026-10-06T05:50:37.686917+00:00",
+  "timestamp": "2026-10-06T09:19:40.961291+00:00",
   "study": "git-freeze-continuation-20261006",
-  "primary_runs": 6,
+  "primary_runs": 18,
+  "budget": {
+    "task_attempts": 17,
+    "tokens": 1803570,
+    "seconds": 1138.1,
+    "errors": 3
+  },
   "development_runs": 3,
-  "pairs": [],
+  "pairs": [
+    {
+      "task": "code-learn",
+      "development_score": 0.7,
+      "official_score": 0.7,
+      "delta": 0.0,
+      "same_hash": true,
+      "same_model": true,
+      "same_cap": true,
+      "development_timestamp": "2026-10-06T05:45:37.976862+00:00",
+      "official_timestamp": "2026-10-06T09:05:26.698302+00:00"
+    },
+    {
+      "task": "data-learn",
+      "development_score": 0.75,
+      "official_score": 0.75,
+      "delta": 0.0,
+      "same_hash": true,
+      "same_model": true,
+      "same_cap": true,
+      "development_timestamp": "2026-10-06T05:47:15.296548+00:00",
+      "official_timestamp": "2026-10-06T09:08:14.241869+00:00"
+    },
+    {
+      "task": "logs-learn",
+      "development_score": 0.6666666666666666,
+      "official_score": 0.6666666666666666,
+      "delta": 0.0,
+      "same_hash": true,
+      "same_model": true,
+      "same_cap": true,
+      "development_timestamp": "2026-10-06T05:48:07.526278+00:00",
+      "official_timestamp": "2026-10-06T09:09:35.920632+00:00"
+    }
+  ],
   "breakdown": [
+    {
+      "condition": "baseline",
+      "role": "eval",
+      "runs": 3,
+      "errors": 1,
+      "technical_passed": 18,
+      "technical_total": 18,
+      "rules_passed": 0,
+      "rules_total": 12,
+      "mean_score": 0.5973063973063973,
+      "mean_tokens": 113361.0
+    },
     {
       "condition": "baseline",
       "role": "learn",
@@ -16,6 +68,42 @@
       "rules_total": 9,
       "mean_score": 0.6638888888888889,
       "mean_tokens": 84529.0
+    },
+    {
+      "condition": "skills-auto",
+      "role": "eval",
+      "runs": 3,
+      "errors": 0,
+      "technical_passed": 18,
+      "technical_total": 18,
+      "rules_passed": 0,
+      "rules_total": 12,
+      "mean_score": 0.5973063973063973,
+      "mean_tokens": 70266.33333333333
+    },
+    {
+      "condition": "skills-auto",
+      "role": "learn",
+      "runs": 3,
+      "errors": 0,
+      "technical_passed": 18,
+      "technical_total": 18,
+      "rules_passed": 1,
+      "rules_total": 9,
+      "mean_score": 0.7055555555555556,
+      "mean_tokens": 101444.66666666667
+    },
+    {
+      "condition": "subagents",
+      "role": "eval",
+      "runs": 3,
+      "errors": 0,
+      "technical_passed": 16,
+      "technical_total": 18,
+      "rules_passed": 0,
+      "rules_total": 12,
+      "mean_score": 0.5232323232323233,
+      "mean_tokens": 97341.0
     },
     {
       "condition": "subagents",
@@ -30,55 +118,12 @@
       "mean_tokens": 140000.33333333334
     }
   ],
-  "missing": [
+  "missing": [],
+  "errors": [
     {
       "condition": "baseline",
-      "task": "code-eval"
-    },
-    {
-      "condition": "baseline",
-      "task": "data-eval"
-    },
-    {
-      "condition": "baseline",
-      "task": "logs-eval"
-    },
-    {
-      "condition": "subagents",
-      "task": "code-eval"
-    },
-    {
-      "condition": "subagents",
-      "task": "data-eval"
-    },
-    {
-      "condition": "subagents",
-      "task": "logs-eval"
-    },
-    {
-      "condition": "skills-auto",
-      "task": "code-eval"
-    },
-    {
-      "condition": "skills-auto",
-      "task": "code-learn"
-    },
-    {
-      "condition": "skills-auto",
-      "task": "data-eval"
-    },
-    {
-      "condition": "skills-auto",
-      "task": "data-learn"
-    },
-    {
-      "condition": "skills-auto",
-      "task": "logs-eval"
-    },
-    {
-      "condition": "skills-auto",
-      "task": "logs-learn"
+      "task": "data-eval",
+      "error": "GraphRecursionError: Recursion limit of 60 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT"
     }
-  ],
-  "errors": []
+  ]
 }

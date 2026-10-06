@@ -48,6 +48,9 @@ def main():
             if not old["error"]:
                 print(f"KEEP {condition}/{task.id}: {old['passed']}/{old['total']}", flush=True)
                 continue
+            if args.stage == "official" and "GraphRecursionError" in old["error"]:
+                print(f"KEEP FAILED {condition}/{task.id}: recursion limit; finish other tasks before an explicit retry", flush=True)
+                continue
             raise RuntimeError(f"Failed observation retained at {saved}; archive before an explicit retry")
         print(f"START {args.stage} {condition}/{task.id}", flush=True)
         directory = target if args.stage == "official" else ROOT / "results/git-development-tmp"
@@ -64,6 +67,9 @@ def main():
         if frozen:
             assert datetime.fromisoformat(record["timestamp"]) >= datetime.fromisoformat(frozen["timestamp"])
         if record["error"]:
+            if args.stage == "official" and "GraphRecursionError" in record["error"]:
+                print("Recursion failure retained; continuing remaining tasks with the same model/cap.", flush=True)
+                continue
             print("Execution error saved; stop without consuming more quota.", flush=True)
             return 2
         time.sleep(3)

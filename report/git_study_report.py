@@ -12,7 +12,8 @@ def main():
     plan = json.loads((report / "git-study-plan.json").read_text(encoding="utf-8"))
     archived = (report / "pre-git-freeze/REPORT.md").read_text(encoding="utf-8")
     def section(number):
-        return archived.split(f"## {number}.", 1)[1].split(f"## {number + 1}.", 1)[0].strip()
+        block = archived.split(f"## {number}.", 1)[1].split(f"## {number + 1}.", 1)[0].strip()
+        return block.split("\n", 1)[1].strip()
     runs = load_runs(ROOT / "results")
     table = build_table(runs)
     (report / "table.md").write_text(table + "\n", encoding="utf-8")
@@ -24,6 +25,17 @@ def main():
             devs[task.id] = json.loads(path.read_text(encoding="utf-8"))
     frozen_path = report / "git-freeze.json"
     frozen = json.loads(frozen_path.read_text(encoding="utf-8")) if frozen_path.exists() else None
+    current_errors = [r for r in runs if r["error"]]
+    execution_note = ("Lỗi thực thi trong bảng: " + "; ".join(f"{r['condition']}/{r['task']}: {r['error'].splitlines()[0]}" for r in current_errors)
+                      + ". Điểm từ output dở dang không được coi là một lượt hoàn tất; không dùng lỗi này làm lỗi quy ước của tác tử."
+                      if current_errors else "Các lượt chính hiện có không lỗi thực thi; các lần lỗi đã thay thế được lưu riêng trong results/git-study-attempts/.")
+    attempts = {}
+    for path in (ROOT / "results").rglob("run.json"):
+        item = json.loads(path.read_text(encoding="utf-8"))
+        if item.get("study") == plan["study"]:
+            attempts[(item["condition"],item["task"],item["timestamp"])] = item
+    budget = dict(task_attempts=len(attempts), tokens=sum(r["tokens"]["total"] for r in attempts.values()),
+                  seconds=round(sum(r["seconds"] for r in attempts.values()),1), errors=sum(bool(r["error"]) for r in attempts.values()))
     groups = defaultdict(list)
     for r in runs:
         groups[(r["condition"], r["role"])].append(r)
@@ -67,6 +79,7 @@ def main():
             noise.append(f"| {task.id} | {d['passed']}/{d['total']} | Chưa chạy | — | {d['tokens']['total']:,} / — | {d['skills_read']} / — |")
     costs = ["| Condition | Số lượt | Điểm TB | Token TB | Điểm / 10.000 token |", "|---|---:|---:|---:|---:|"]
     means = {}
+    counts = {}
     for condition in ("baseline", "subagents", "skills-auto"):
         rs = [r for r in runs if r["condition"] == condition]
         if not rs:
@@ -76,11 +89,13 @@ def main():
         costs.append(f"| {condition} | {len(rs)} | {score:.3f} | {tokens:,.0f} | {score/tokens*10000:.4f} |")
         for role in ("learn", "eval"):
             selected = [r for r in rs if r["role"]==role]
-            if selected:means[(condition, role)]=sum(r["score"] for r in selected)/len(selected)
+            if selected:
+                means[(condition, role)]=sum(r["score"] for r in selected)/len(selected)
+                counts[(condition, role)]=len(selected)
     comparisons = []
     for condition in ("subagents", "skills-auto"):
         for role in ("learn", "eval"):
-            if (condition,role) in means and ("baseline",role) in means:
+            if counts.get((condition,role)) == 3 and counts.get(("baseline",role)) == 3:
                 comparisons.append(f"- {condition}, {role}: chênh baseline {means[(condition,role)]-means[('baseline',role)]:+.3f} trên thang 0–1.")
     mechanisms_path = report / "git-study-observations.md"
     mechanisms = mechanisms_path.read_text(encoding="utf-8") if mechanisms_path.exists() else "Các quan sát trace mới sẽ bổ sung sau khi chạy chính thức; chưa kết luận cơ chế từ điểm chưa có."
@@ -100,6 +115,7 @@ def main():
     hypotheses = section(2).split("\n\nGemini là",1)[0]
     # The original hypotheses stay unchanged; only current execution evidence is replaced.
     curator = section(6).split("\n\nDevelopment gốc",1)[0]
+    old_learning_delegation = "Ví dụ quan sát:" + section(5).split("Ví dụ quan sát:", 1)[1].split("\n\nỞ subagents/data-eval", 1)[0]
     content = f"""# Báo cáo Lab: Self evolving Agentic — hoàn thiện Git freeze
 
 Ngày: 06/10/2026, Asia/Bangkok. Phiên cũ được giữ ở `results/pre-git-freeze/` và `report/pre-git-freeze/`. Người dùng đã cho phép commit/tag freeze; không push. Skill curator OpenRouter giữ nguyên byte. Phiên này sửa bằng chứng trình tự chạy và bổ sung phân tích, không tuyên bố chưa từng thấy đánh giá trước đây.
@@ -113,6 +129,7 @@ Ngày: 06/10/2026, Asia/Bangkok. Phiên cũ được giữ ở `results/pre-git-
 - Model `{plan['model']}`, Gemini Developer API, temperature {plan['temperature']}, recursion limit {plan['recursion_limit']}. Python 3.12.15, Deep Agents 0.7.21, langchain-google-genai 4.4.0; Docker Linux trên Windows.
 - Cấu hình shell UID 65534, không kế thừa khóa, không đọc thư mục runner/check ẩn. Xem shell-isolation.json và REPRODUCE.md. `.env` được ignore.
 - Có {len(runs)}/18 lượt chính, {sum(not r['error'] for r in runs)} không lỗi thực thi; development mới {len(devs)}/3. Sáu lượt baseline/subagents học được giữ từ trước tag, cùng model/cap, không chạy lại không cần thiết.
+- Ngân sách riêng phiên mới đã ghi nhận: {budget['task_attempts']} lượt thử, {budget['tokens']:,} token, {budget['errors']} lỗi; không đếm hai lần các bản sao lưu cùng timestamp. Sáu lượt học được giữ từ trước không nằm trong tổng này.
 - Commit tag freeze: {frozen['commit'] if frozen else 'chưa tạo — bản nháp trước freeze'}. Commit hypotheses: {frozen['hypotheses_commit'] if frozen else 'sẽ commit sau khi đủ development'}. Kế hoạch: git-study-plan.json.
 
 ## 2. Giả thuyết trước tag freeze
@@ -139,6 +156,8 @@ Explorer đọc đặc tả và báo cáo, không sửa; implementer thực hi�
 
 subagent_calls=0 vẫn là kết quả hợp lệ: model có công cụ task nhưng có thể chọn xử lý trực tiếp. Những tác vụ nhỏ có thể không cần phân vai; đây là giải thích khả dĩ, không xác nhận suy nghĩ nội bộ. Trace chỉ lưu luồng chính, callback token có cộng model call bên trong subagent. Phân tích giao việc cụ thể được bổ sung ở mục 8 từ prompt/báo cáo lưu trong trace mới.
 
+{old_learning_delegation}
+
 ## 6. Skill curator và development trước freeze
 
 {curator}
@@ -161,6 +180,8 @@ Development mới ở `results/skills-auto-dev/<task>/`; ba lượt này dùng s
 
 {chr(10).join(summary_rows)}
 
+{execution_note}
+
 Hash skill `{plan['skills_sha256']}`. Báo cáo không coi hash cục bộ là thay thế Git. Verifier gốc được chạy sau khi đủ lượt chính; kết quả lưu ở git-freeze-check.txt. Các lượt chính skills-auto phải sau thời điểm commit tag mới, các lượt development phải trước nó, hash/model/cap phải bằng nhau. Trạng thái thực tế: {'tag đã được tạo; kiểm tra kết quả chạy trong git-study-validation.json' if frozen else 'chưa tạo tag; chưa có lượt chính mới'}.
 
 ## 8. Phân tích
@@ -176,6 +197,8 @@ Chỉ so sánh điều kiện sau khi có cùng độ phủ. Kết quả âm ho�
 {chr(10).join(costs)}
 
 Điểm/token được tính từ các lượt chính cùng model. Token không đồng nhất với tiền vì tier/cache/billing khác nhau. Dùng số lần gọi và trace để đánh giá chi phí giao việc, không mặc định đa tác tử hiệu quả hơn.
+
+{execution_note}
 
 ### Nhiễu development so với sau freeze
 
@@ -195,6 +218,7 @@ Skill khớp byte với curator-attempt-2, không thêm quy tắc đánh giá. S
 4. Sáu baseline/subagents học được giữ từ phiên trước, cùng tham số nhưng khác thời điểm; task và model chỉ có một bộ, hạn chế so sánh nhân quả.
 5. Trace chỉ luồng chính, cắt nội dung dài; không thấy đầy đủ công việc subagent, không lấy lời báo hoàn thành làm bằng chứng duy nhất.
 6. Dữ liệu/quy ước do giảng viên thiết kế, skill schema có thể quá khớp; kết quả lab không chứng minh lợi ích trên dự án thực tế.
+7. Baseline/data-eval ba lần chạm cap 60; điểm output dở dang không chứng minh model kết thúc đúng. Chi phí retry và việc thiếu một lượt baseline hoàn tất hạn chế so sánh hiệu quả hệ thống; bản tham chiếu cũ được giữ riêng, không thay record mới.
 
 ## 10. Kết luận
 
@@ -205,11 +229,20 @@ Skill khớp byte với curator-attempt-2, không thêm quy tắc đánh giá. S
 REPRODUCE.md có lệnh và các bước archive → development → hypotheses commit → freeze commit/tag → official → verifier/compare/report. Không gọi curator thêm, không push, không sửa tests/tasks/scripts/module có sẵn. Các hồ sơ cũ nằm riêng; HYPOTHESES.md, REPORT-before-eval.md, freeze.json và artifact curator ban đầu được giữ nguyên. Bonus chưa thực hiện.
 """
     (report / "REPORT.md").write_text(content, encoding="utf-8")
-    summary = dict(timestamp=datetime.now(timezone.utc).isoformat(), study=plan["study"], primary_runs=len(runs),
+    summary = dict(timestamp=datetime.now(timezone.utc).isoformat(), study=plan["study"], primary_runs=len(runs), budget=budget,
                    development_runs=len(devs), pairs=pairs, breakdown=breakdown,
                    missing=[dict(condition=c,task=t.id) for c in ("baseline","subagents","skills-auto") for t in list_tasks() if (c,t.id) not in by_key],
                    errors=[dict(condition=r["condition"],task=r["task"],error=r["error"]) for r in runs if r["error"]])
     (report / "git-study-summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    (report / "observed-breakdown.json").write_text(json.dumps(breakdown,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    remaining = dict(study=plan["study"], selected_runs=len(runs), planned_runs=18, development_runs=len(devs),
+                     missing=summary["missing"], retry=summary["errors"],
+                     resume=".\\report\\run_gemini.ps1 python report/complete_git_freeze.py official",
+                     git_requirement="Actual hypotheses/freeze commits and freeze tag exist" if frozen else "Waiting for completed development before Git freeze",
+                     protocol="New development before Git tag; new official runs after tag; original historical evaluation already seen")
+    remaining["retry_requires_archiving_failed_record"] = bool(summary["errors"])
+    remaining["retry_policy"] = "Baseline/data-eval already tried three times at cap 60; preserve failed records before any explicitly chosen further retry"
+    (report / "remaining-work.json").write_text(json.dumps(remaining,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(f"Report generated from {len(runs)} primary runs and {len(devs)} development runs")
 
 

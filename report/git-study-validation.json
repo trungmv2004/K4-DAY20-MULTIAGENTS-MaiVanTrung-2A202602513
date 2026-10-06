@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-06T09:21:22.864368+00:00",
+  "ok": false,
+  "primary_runs": 18,
+  "development_runs": 3,
+  "git_freeze": true,
+  "original_verifier_exit": 0,
+  "tag_commit": "3d23bd90241677d23f14b648c7df9ddc1e7abbe9",
+  "hypotheses_commit": "7dc9055bfbb66ffa634460319f8b7e61ec7d6384",
+  "development_before_git_freeze": true,
+  "official_runs_after_git_freeze": true,
+  "same_skill_model_cap": true,
+  "protected_source_unchanged": true,
+  "configured_secrets_found": false,
+  "files_scanned": 285,
+  "fresh_blind_preregistration": false,
+  "execution_errors": [
+    {
+      "condition": "baseline",
+      "task": "data-eval",
+      "error": "GraphRecursionError: Recursion limit of 60 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT"
+    }
+  ]
+}

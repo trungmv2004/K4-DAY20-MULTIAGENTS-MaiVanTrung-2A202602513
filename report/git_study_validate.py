@@ -79,7 +79,7 @@ def main():
         selected = [r for r in runs if r["condition"] == condition]
         assert {r["task"] for r in selected} == {t.id for t in list_tasks()}
         for r in selected:
-            assert r["error"] is None and not r["skills_modified"]
+            assert not r["skills_modified"]
             assert r["model"] == plan["model"] and r["recursion_limit"] == plan["recursion_limit"] and r["temperature"] == plan["temperature"]
             assert r["total"] == len(r["checks"]) and r["passed"] == sum(c["passed"] for c in r["checks"])
             assert abs(r["score"] - r["passed"] / r["total"]) < 1e-10
@@ -96,14 +96,18 @@ def main():
     print(verifier.stdout.strip())
     breakdown = subprocess.run(["python", "scripts/check_breakdown.py"], cwd=ROOT, capture_output=True, text=True, check=True)
     (report / "check_breakdown.txt").write_text(breakdown.stdout, encoding="utf-8")
-    result = dict(timestamp=datetime.now(timezone.utc).isoformat(), ok=True, primary_runs=18, development_runs=3,
+    errors = [dict(condition=r["condition"], task=r["task"], error=r["error"]) for r in runs if r["error"]]
+    result = dict(timestamp=datetime.now(timezone.utc).isoformat(), ok=not errors, primary_runs=18, development_runs=3,
                   git_freeze=True, original_verifier_exit=verifier.returncode, tag_commit=frozen["commit"],
                   hypotheses_commit=frozen["hypotheses_commit"], development_before_git_freeze=True,
                   official_runs_after_git_freeze=True, same_skill_model_cap=True, protected_source_unchanged=True,
-                  configured_secrets_found=False, files_scanned=len(files), fresh_blind_preregistration=False)
+                  configured_secrets_found=False, files_scanned=len(files), fresh_blind_preregistration=False,
+                  execution_errors=errors)
     (report / "git-study-validation.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("PASS: 18 official records, 3 pre/post pairs, real Git freeze, comparison table")
-    return 0
+    if errors:
+        print(f"ATTENTION: {len(errors)} official execution error(s) retained; timing/integrity checks passed")
+    return int(bool(errors))
 
 
 if __name__ == "__main__":
